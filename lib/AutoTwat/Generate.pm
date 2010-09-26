@@ -10,6 +10,7 @@ use Data::Dumper;
 AutoTwat::Generate::EN::init();
 
 my %classes;
+my %vars;
 
 sub generate
 {
@@ -26,15 +27,30 @@ sub terminal
 	print "$class\n";
 	print Dumper \@args;
 	
+	my $ret;
+	
 	if (exists($classes{$class}))
 	{
-		return getclass($class, @args);
+		$ret = getclass($class, @args);
 	}
 	else
 	{
 		#XXX FIX FOR LOCALITIES!
-		return AutoTwat::Generate::EN::terminal($class, @args);
+		$ret = AutoTwat::Generate::EN::terminal($class, @args);
 	}
+	
+	if (@args ~~ /^sto(?:re)?=(.*)$/)
+	{
+		store($1, $ret);
+	}
+}
+
+sub store
+{
+	my $var = shift;
+	my $value = shift;
+	
+	$vars{$var} = $value;
 }
 
 sub getclass

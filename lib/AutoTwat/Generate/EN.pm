@@ -49,14 +49,30 @@ sub terminal
 	
 	if (exists $words{$class})
 	{
-		my $word = @{$words{$class}}[rand @{$words{$class}}];
+		my @wwords = keys %{$words{$class}};
+		my $word = @wwords[rand @wwords];
 		
 		if ($class =~ /^verb/)
 		{
-			my $subject = map {/^sub(?:j(?:ect)?)?=(.*)$/i; $1 ? $1 : ()} @args;
-			my $tense = map {/^ten(?:se)?=(.*)$/i; $1 ? $1 : ()} @args;
-			my $negation = map {/^ten(?:se)?=(.*)$/i; $1 ? $1 : ()} @args;
+			my $subject = (map {/^sub(?:j(?:ect)?)?=(.*)$/i; $1 ? $1 : ()} @args)[0];
+			my $tense = (map {/^ten(?:se)?=(.*)$/i; $1 ? $1 : ()} @args)[0];
+			my $negation = (map {/^neg(?:ation)?=(.*)$/i; $1 ? $1 : ()} @args)[0]; 
 			
+			$subject //= "it"; # default to 3rd person singular
+			$tense //= "present"; # default to present tense
+			
+			print Dumper($word, $subject, $tense, $negation);
+						
+			my$ret=conjugate( 'verb'=>$word, 
+                             'tense'=>$tense, 
+                           'pronoun'=>$subject,
+                           $negation ? ('negation'=>$negation) : () );
+                           
+            die "Invalid args 「".join(", ", @args)."」 to $class\n";
+            
+            $ret =~ s/^\s*$subject//; #remove the subject, we aren't going to 
+            print Dumper($ret);
+            return $ret;
 		}
 	}
 }
