@@ -40,9 +40,25 @@ sub init {
 	}
 }
 
-sub verb {
-  my $input = shift;
-  
+sub terminal
+{
+	my $class = shift;
+	my @args = @_;
+	
+	print "$class\n";
+	
+	if (exists $words{$class})
+	{
+		my $word = @{$words{$class}}[rand @{$words{$class}}];
+		
+		if ($class =~ /^verb/)
+		{
+			my $subject = map {/^sub(?:j(?:ect)?)?=(.*)$/i; $1 ? $1 : ()} @args;
+			my $tense = map {/^ten(?:se)?=(.*)$/i; $1 ? $1 : ()} @args;
+			my $negation = map {/^ten(?:se)?=(.*)$/i; $1 ? $1 : ()} @args;
+			
+		}
+	}
 }
 
 1;
