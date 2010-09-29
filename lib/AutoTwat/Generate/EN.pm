@@ -68,12 +68,20 @@ sub terminal
                            'pronoun'=>$subject,
                            $negation ? ('negation'=>$negation) : () );
                            
-            die "Invalid args 「".join(", ", @args)."」 to $class\n";
+            die "Invalid args 「".join(", ", @args)."」 to $class\n" unless defined($ret);
             
-            $ret =~ s/^\s*$subject//; #remove the subject, we aren't going to 
+            $ret =~ s/^\s*\Q$subject\E\s*//; #remove the subject, we aren't going to 
             print Dumper($ret);
             return $ret;
 		}
+		else
+		{
+			return $word;
+		}
+	}
+	else
+	{
+		die "No such class $class";
 	}
 }
 
